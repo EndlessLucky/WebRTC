@@ -112,8 +112,11 @@ class DebateController extends Controller
             return view('debate.error')->with('error', 'Password does not match...');
 
         $usertype = 'subscriber';
+        $fullname = '';
         if( Auth::check() )
         {
+            $fullname = Auth::user()->fullname;
+
             if( $debate->moderator == Auth::user()->id )
                 $usertype = 'moderator';
             else if( $debate->debator_one == Auth::user()->email )
@@ -141,6 +144,7 @@ class DebateController extends Controller
         return view('debate.show')
                ->with('topic', $debate->topic)
                ->with('usertype', $usertype)
+               ->with('fullname', $fullname)
                ->with('roomId', $id)
                ->with('pin', $password)
                ->with('feeling', $feeling)

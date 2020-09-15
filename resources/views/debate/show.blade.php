@@ -431,6 +431,11 @@
                 <div class = "col-md-1 text-left">
                     <button class = "doCommentBtn" onclick = "comment('two')">Comment</button>
                 </div>
+                <div class="form-group row" style="margin: auto; justify-content: center;">
+                    <a href="{{ url('/login/twitter') }}" class="btn btn-primary" style="margin-right:10px;">Twitter Login</a>
+                    <a href="{{ url('/login/facebook') }}" class="btn btn-primary" style="margin-right:10px;">Facebook Login</a>
+                    <a href="{{ url('/login/google') }}" class="btn btn-primary">Google Login</a>                   
+                </div>
             </div>
         </div>
     </main>
@@ -448,6 +453,7 @@ var janus = null;
 var sfutest = null;
 var roomId = "{{ $roomId }}";
 var username = "{{ $usertype }}";
+var fullname = "{{ $fullname }}";
 var usertype;
 var opaqueId = "debate-" + roomId;
 
@@ -468,25 +474,31 @@ else
 var publishStopper;
 
 $(document).ready(function() {
+
+    if( fullname == '' ){
+        $('#myCommentOne').prop('disabled', true);
+        $('#myCommentTwo').prop('disabled', true);
+    }
+
     document.getElementById("moderator").addEventListener("loadeddata", function() {
         console.log('hhh', this);
-  if (typeof this.webkitAudioDecodedByteCount !== "undefined") {
-    // non-zero if video has audio track
-    if (this.webkitAudioDecodedByteCount > 0)
-      console.log("video has audio");
-    else
-      console.log("video doesn't have audio");
-  }
-  else if (typeof this.mozHasAudio !== "undefined") {
-    // true if video has audio track
-    if (this.mozHasAudio)
-      console.log("video has audio");
-    else
-      console.log("video doesn't have audio");
-  }
-  else
-    console.log("can't tell if video has audio");
-});
+        if (typeof this.webkitAudioDecodedByteCount !== "undefined") {
+            // non-zero if video has audio track
+            if (this.webkitAudioDecodedByteCount > 0)
+            console.log("video has audio");
+            else
+            console.log("video doesn't have audio");
+        }
+        else if (typeof this.mozHasAudio !== "undefined") {
+            // true if video has audio track
+            if (this.mozHasAudio)
+            console.log("video has audio");
+            else
+            console.log("video doesn't have audio");
+        }
+        else
+            console.log("can't tell if video has audio");
+    });
 
     $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
 
@@ -1107,8 +1119,8 @@ function addComment( username, text, type )
 }
 
 function comment( type ){
-    
-    if( usertype == 'subscriber' ){
+
+    if( fullname == '' ){
         toastr.warning("Please login");
         return;
     }
