@@ -1107,6 +1107,12 @@ function addComment( username, text, type )
 }
 
 function comment( type ){
+    
+    if( usertype == 'subscriber' ){
+        toastr.warning("Please login");
+        return;
+    }
+
     var text;
     if( type == 'one' )
         text = $("#myCommentOne").val();

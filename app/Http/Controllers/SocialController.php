@@ -22,6 +22,7 @@ class SocialController extends Controller
             return redirect('/');
         }else {
             $uesr = User::create([
+                'name' => $userSocial->getName(),
                 'fullname' => $userSocial->getName(),
                 'email' => $userSocial->getEmail(),
                 'image' => $userSocial->getAvatar(),
