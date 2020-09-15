@@ -63,6 +63,11 @@
                             </div>
                         </div>
                     </form>
+                    <div class="form-group row" style="margin-top: 20px; justify-content: center;">
+                        <a href="{{ url('/login/twitter') }}" class="btn btn-primary" style="margin-right:10px;">Twitter Login</a>
+                        <a href="{{ url('/login/facebook') }}" class="btn btn-primary" style="margin-right:10px;">Facebook Login</a>
+                        <a href="{{ url('/login/google') }}" class="btn btn-primary">Google Login</a>                   
+                    </div>
                 </div>
             </div>
         </div>

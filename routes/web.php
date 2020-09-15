@@ -56,3 +56,7 @@ Route::post('/invite', 'DebateController@sendInvite')->name('invite');
 
 // Check invitation and delete in a invitation list
 Route::post('/checkinvite', 'DebateController@checkInvite')->name('checkinvite');
+
+//Social login
+Route::get('login/{provider}', 'SocialController@redirect');
+Route::get('login/{provider}/callback', 'SocialController@Callback');
