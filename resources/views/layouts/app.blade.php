@@ -19,7 +19,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('css/landio.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -92,6 +92,34 @@
         <main class="py-4">
             @yield('content')
         </main>
+
+        <footer class="section-footer bg-inverse" role="contentinfo">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h3>About</h3>
+                        <p>We’re the new social media platform for debate!</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>Contact Info</h3>
+                        <ul>
+                            <li><span class="text">51 Phillips Hill Rd. New City, New York, United States</span></li>
+                            <li><span class="text">+1 8455907048</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>Useful Links</h3>
+                        <ul>
+                            <li><a href="https://debateface.com/home">Home</a></li>
+                            <li><a href="https://debateface.com/join">Watch / Join Debate</a></li>
+                            <li><a href="https://debateface.com/start">Start Debate</a></li>
+                            <li><a href="https://debateface.com/about">About</a></li>
+                            <li><a href="https://debateface.com/contactus">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>            
+            </div>
+        </footer>
     </div>
 </body>
 </html>

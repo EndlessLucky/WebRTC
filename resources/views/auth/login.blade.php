@@ -39,7 +39,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row" style="margin-bottom: 10px">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -57,16 +57,22 @@
                                     {{ __('Login') }}
                                 </button>
 
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
+                                <a class="btn btn-link" style="padding-left: 0px;" href="{{ route('password.request') }}">
                                     {{ __('Forgot Your Password?') }}
                                 </a>
                             </div>
                         </div>
                     </form>
-                    <div class="form-group row" style="margin-top: 20px; justify-content: center;">
-                        <a href="{{ url('/login/twitter') }}" class="btn btn-primary" style="margin-right:10px;">Twitter Login</a>
-                        <a href="{{ url('/login/facebook') }}" class="btn btn-primary" style="margin-right:10px;">Facebook Login</a>
-                        <a href="{{ url('/login/google') }}" class="btn btn-primary">Google Login</a>                   
+                    <div class="text-xs-center" style="margin-top: 20px; justify-content: center;">
+                        <a href="{{ url('/login/facebook') }}" class="btn btn-social btn-social-icon btn-social-facebook">
+                            <span class="icon-facebook"></span>
+                        </a>
+                        <a href="{{ url('/login/twitter') }}" class="btn btn-social btn-social-icon btn-social-twitter">
+                            <span class="icon-twitter"></span>
+                        </a>
+                        <a href="{{ url('/login/google') }}" class="btn btn-social btn-social-icon btn-social-google">
+                            <span class="icon-google"></span>
+                        </a>                        
                     </div>
                 </div>
             </div>
