@@ -478,6 +478,9 @@ $(document).ready(function() {
     if( fullname == '' ){
         $('#myCommentOne').prop('disabled', true);
         $('#myCommentTwo').prop('disabled', true);
+        $('.form-group').show();
+    }else{
+        $('.form-group').hide();
     }
 
     document.getElementById("moderator").addEventListener("loadeddata", function() {
