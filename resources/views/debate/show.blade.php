@@ -19,6 +19,7 @@
 <!-- Styles -->
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+<!-- <link href="{{ asset('css/landio.css') }}" rel="stylesheet"> -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.4.0/adapter.min.js" ></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" ></script>
@@ -431,14 +432,39 @@
                 <div class = "col-md-1 text-left">
                     <button class = "doCommentBtn" onclick = "comment('two')">Comment</button>
                 </div>
-                <div class="form-group row" style="margin: auto; justify-content: center;">
-                    <a href="{{ url('/login/twitter') }}" class="btn btn-primary" style="margin-right:10px;">Twitter Login</a>
-                    <a href="{{ url('/login/facebook') }}" class="btn btn-primary" style="margin-right:10px;">Facebook Login</a>
-                    <a href="{{ url('/login/google') }}" class="btn btn-primary">Google Login</a>                   
-                </div>
             </div>
         </div>
     </main>
+    <div class="modal fade" id="loginDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Please login with your email or social account</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <a href="{{ route('login') }}" class="btn btn-primary">
+                    Go to login page
+                </a>
+            </div>
+            <div class="modal-footer">
+                <div class="text-xs-center" style="margin-top: 20px; justify-content: center;">
+                    <a href="{{ url('/login/facebook') }}" class="btn btn-primary">
+                        Facebook
+                    </a>
+                    <a href="{{ url('/login/twitter') }}" class="btn btn-primary">
+                        Twitter
+                    </a>
+                    <a href="{{ url('/login/google') }}" class="btn btn-primary">
+                        Google
+                    </a>                        
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -474,14 +500,6 @@ else
 var publishStopper;
 
 $(document).ready(function() {
-
-    if( fullname == '' ){
-        $('#myCommentOne').prop('disabled', true);
-        $('#myCommentTwo').prop('disabled', true);
-        $('.form-group').show();
-    }else{
-        $('.form-group').hide();
-    }
 
     document.getElementById("moderator").addEventListener("loadeddata", function() {
         console.log('hhh', this);
@@ -1125,6 +1143,8 @@ function comment( type ){
 
     if( fullname == '' ){
         toastr.warning("Please login");
+        $('#loginDialog').modal();
+        $('#landioCss').show();
         return;
     }
 
