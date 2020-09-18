@@ -20,9 +20,10 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/landio.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <!-- <div id="app"> -->
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -89,9 +90,76 @@
                 </div>
             </div>
         </nav>
-        <br>
+        <!-- <br> -->
         
-        <div id="bgContent">
+        <header class="jumbotron bg-inverse text-xs-center center-vertically" role="banner">
+            <div class="container">
+                <h1 class="display-3">Welcome to DebateFace!</h1>
+                <h2 class="m-b-3">We’re the new social media platform for debate!<br> Users hop on, create a debate and invite other users to participate and spectate.<br> It’s that simple. Check out the steps below to get started.
+                    <br>Make sure to join our email list because we’re going to have featured debates every week.<br> We’re talking big names and influencers going up against each other one on one.</h2>
+            </div>
+        </header>
+
+        <section class="section-features text-xs-center">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                    <div class="card-block">
+                        <span class="icon-pen display-1"></span>
+                        <h4 class="card-title">Option 1: Create a debate</h4>
+                        <p class="card-text">To start a debate click “start a debate” on the menu. Set the rules, and invite your participants via email or link. Once you’re in a debate room you have tools and controls to moderate your debate. Give others your share link to watch the debate.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                    <div class="card-block">
+                        <span class="icon-thunderbolt display-1"></span>
+                        <h4 class="card-title">Option 2: Join a debate</h4>
+                        <p class="card-text">Browse public debate rooms or join a specific debate with unique debate number. You’ll receive an email or a unique link to be able to join the debate as one of the debate participants. A camera and microphone is necessary to contribute.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card m-b-0">
+                    <div class="card-block">
+                        <span class="icon-heart display-1"></span>
+                        <h4 class="card-title">Option 3: Watch a debate</h4>
+                        <p class="card-text">Browse public debates or spectate a specific debate. Enjoy the show!</p>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="section-footer bg-inverse" role="contentinfo">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="media">
+                            <small class="media-body media-bottom">
+                                &copy; DebateFace 2020. <br>
+                                Designed and eveloped by Olive.
+                            </small>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-6 col-lg-7">
+                        <ul class="nav nav-inline">
+                            <li class="nav-item">
+                                <a class="nav-link" href="./index-carousel.html"><small>NEW</small> Slides<span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="ui-elements.html">UI Kit</a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/tatygrassini/landio-html" target="_blank">GitHub</a></li>
+                            <li class="nav-item"><a class="nav-link scroll-top" href="#totop">Back to top <span class="icon-caret-up"></span></a></li>
+                        </ul>
+                    </div> -->
+                </div>
+            </div>
+        </footer>
+
+        <!-- <div id="bgContent">
             <img src="{{asset('img/debate.jpg')}}" id="debateImg"/>
             <div style="margin: 30px 10px 0px 10px">
                 <div>
@@ -115,8 +183,8 @@
         </div>
         <main class="py-4">
             @yield('content')
-        </main>
-    </div>
+        </main> -->
+    <!-- </div> -->
 
 </body>
 </html>
