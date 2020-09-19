@@ -1093,7 +1093,7 @@ function addComment( username, text, type )
 {
     var comment = document.createElement("div");
     comment.className = "row mt-2";
-    
+
     if( type == 'one' )
     {
         var usernamePane = document.createElement("div");
@@ -1109,7 +1109,7 @@ function addComment( username, text, type )
         commentPane.appendChild( commentText );
 
         comment.appendChild( usernamePane );
-        comment.appendChild( commentPane );
+        comment.appendChild( commentPane );      
     }
     else
     {
@@ -1127,6 +1127,7 @@ function addComment( username, text, type )
 
         comment.appendChild( commentPane );
         comment.appendChild( usernamePane );
+        
     }
 
     var commentsPanel;
@@ -1144,7 +1145,6 @@ function comment( type ){
     if( fullname == '' ){
         toastr.warning("Please login");
         $('#loginDialog').modal();
-        $('#landioCss').show();
         return;
     }
 
@@ -1159,13 +1159,14 @@ function comment( type ){
         url:"{{ route('comment') }}",
         data:{ roomId: roomId, text: text, who: type },
         success: function( name ){
-            if( username != 'moderator' )
+            if( username != 'moderator' ){
                 sfutest.data({
                     text: '{ "msgCode": "comment", "username": "' + name + '", "text": "' + text + '", "type": "' + type + '"}',
                     error: function(reason) { toastr.warning(reason); },
                     success: function() { toastr.success("Done"); },
                 });
-            else {
+                // addComment( name, text, type );
+            }else {
                 sfutest.data({
                     text: '{ "msgCode": "addcomment", "username": "Moderator", "text": "' + text + '", "type": "' + type + '"}',
                     error: function(reason) { toastr.warning(reason); },
@@ -1173,7 +1174,8 @@ function comment( type ){
                 });
                 addComment( "Moderator", text, type );
             }   
-    } });
+        } 
+    });
 
     if( type == 'one' )
         $("#myCommentOne").val('');
@@ -1362,7 +1364,7 @@ function listenNewMember( id )
                         error: function(reason) { toastr.warning(reason); },
                         success: function() {  },
                     });
-                    addComment( data.username, data.text );
+                    addComment( data.username, data.text, data.type );
                     break;
             }
         },
