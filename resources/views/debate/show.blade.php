@@ -397,8 +397,10 @@
                             <div class = "col-md-2 text-right commenterName">
                                 {{ $comment->username }}
                             </div>
-                            <div class = "col-md-10 pb-2 ">
-                                <div class = "commentText"> {{ $comment->text }} </div>
+                            <div class = "col-md-10 pb-2 " >
+                                <div class = "commentText" onclick = "oneCommentClick(this)"> {{ $comment->text }} </div>
+                                <button class="btn btn-primary blockShow" id="challengeDebate" style="margin-top: 5px;" 
+                                    onclick="challenge( '{{ $comment->username }}' )">Challenge to debate</button>
                             </div>
                         </div>
                         @endforeach
@@ -1101,12 +1103,26 @@ function addComment( username, text, type )
         usernamePane.innerHTML = username;
         
         var commentPane = document.createElement("div");
-        commentPane.className = "col-md-10 pb-2";
+        commentPane.className = "col-md-10 pb-2";        
         
         var commentText = document.createElement("div");
         commentText.className = "commentText";
         commentText.innerHTML = text;
+        var att = document.createAttribute('onclick');
+        att.value = "oneCommentClick(this)";
+        commentText.setAttributeNode(att);
         commentPane.appendChild( commentText );
+
+        var challengeBtn = document.createElement("button");
+        challengeBtn.className = "btn btn-primary blockShow";
+        challengeBtn.innerHTML = "Challenge to debate";
+        var att = document.createAttribute('onclick');
+        att.value = 'challenge(' + "'{{ $fullname }}'" + ')' ;
+        challengeBtn.setAttributeNode(att);
+        var att = document.createAttribute('style');
+        att.value = "margin-top: 5px;";
+        challengeBtn.setAttributeNode(att);
+        commentPane.appendChild( challengeBtn );
 
         comment.appendChild( usernamePane );
         comment.appendChild( commentPane );      
@@ -1186,6 +1202,25 @@ function comment( type ){
 </script>
 @if ( $usertype == 'moderator' ) 
 <script>
+
+function oneCommentClick(el){
+    if(el.nextSibling.className != undefined){
+        if (el.nextSibling.className == 'btn btn-primary'){
+            el.nextSibling.className = 'btn btn-primary blockShow';
+        }else{
+            el.nextSibling.className = 'btn btn-primary';
+        }
+    }else{
+        if (el.nextSibling.nextSibling.className == 'btn btn-primary'){
+            el.nextSibling.nextSibling.className = 'btn btn-primary blockShow';
+        }else{
+            el.nextSibling.nextSibling.className = 'btn btn-primary';
+        }
+    }
+
+
+    
+}
 
 function kick( who )
 {
@@ -1292,6 +1327,10 @@ function timelimit( who )
 function validateEmail(email) {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
+}
+
+function challenge(username){
+    alert(username);
 }
 
 function invite( who )
