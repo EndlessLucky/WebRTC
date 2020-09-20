@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Comments extends Model
+class Challenges extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,8 +12,8 @@ class Comments extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'username', 'email', 'debateid', 'text', 'who', 'created_at', 'updated_at'
+        'id', 'email', 'created_at', 'updated_at'
     ];
 
-    protected $table = 'comments';
+    protected $table = 'challenges';
 }

@@ -62,4 +62,4 @@ Route::get('login/{provider}', 'SocialController@redirect');
 Route::get('login/{provider}/callback', 'SocialController@Callback');
 
 // Send mail
-Route::post('/challenge', 'DebateController@challenge')->name('challenge');
+Route::post('/challenge', 'DebateController@sendChallenge')->name('challenge');

@@ -400,7 +400,7 @@
                             <div class = "col-md-10 pb-2 " >
                                 <div class = "commentText" onclick = "oneCommentClick(this)"> {{ $comment->text }} </div>
                                 <button class="btn btn-primary blockShow" id="challengeDebate" style="margin-top: 5px;" 
-                                    onclick="challenge( '{{ $comment->username }}' )">Challenge to debate</button>
+                                    onclick="challenge( '{{ $comment->email }}' )">Challenge to debate</button>
                             </div>
                         </div>
                         @endforeach
@@ -482,6 +482,7 @@ var sfutest = null;
 var roomId = "{{ $roomId }}";
 var username = "{{ $usertype }}";
 var fullname = "{{ $fullname }}";
+var myEmail = "{{ $email }}";
 var usertype;
 var opaqueId = "debate-" + roomId;
 
@@ -943,14 +944,15 @@ function newRemoteFeed(id, display, audio, video) {
                     addfeeling( data.msgData );
                     break;
                 case 'addcomment':
-                    addComment( data.username, data.text, data.type );
+                    console.log('@@@@@' + data);
+                    addComment( data.username, data.text, data.type, data.email );
                     break;
             }
         },
         onmessage: function(msg, jsep) {
             Janus.debug(" ::: Got a message (subscriber) :::");
             Janus.debug(msg);
-            console.log('Message Received', msg);
+            // console.log('Message Received', msg);
             var event = msg["videoroom"];
             Janus.debug("Event: " + event);
             if(msg["error"] !== undefined && msg["error"] !== null) {
@@ -1091,7 +1093,7 @@ function feeling( type )
     } });
 }
 
-function addComment( username, text, type )
+function addComment( username, text, type, email )
 {
     var comment = document.createElement("div");
     comment.className = "row mt-2";
@@ -1117,7 +1119,7 @@ function addComment( username, text, type )
         challengeBtn.className = "btn btn-primary blockShow";
         challengeBtn.innerHTML = "Challenge to debate";
         var att = document.createAttribute('onclick');
-        att.value = 'challenge(' + "'{{ $fullname }}'" + ')' ;
+        att.value = "challenge(" + "'" + email + "'" + ")";
         challengeBtn.setAttributeNode(att);
         var att = document.createAttribute('style');
         att.value = "margin-top: 5px;";
@@ -1142,8 +1144,7 @@ function addComment( username, text, type )
         commentPane.appendChild( commentText );
 
         comment.appendChild( commentPane );
-        comment.appendChild( usernamePane );
-        
+        comment.appendChild( usernamePane );        
     }
 
     var commentsPanel;
@@ -1173,22 +1174,22 @@ function comment( type ){
     $.ajax({
         type:'POST',
         url:"{{ route('comment') }}",
-        data:{ roomId: roomId, text: text, who: type },
+        data:{ roomId: roomId, text: text, who: type, email: myEmail },
         success: function( name ){
             if( username != 'moderator' ){
                 sfutest.data({
-                    text: '{ "msgCode": "comment", "username": "' + name + '", "text": "' + text + '", "type": "' + type + '"}',
+                    text: '{ "msgCode": "comment", "username": "' + name + '", "text": "' + text + '", "type": "' + type + '", "email": "' + myEmail + '"}',
                     error: function(reason) { toastr.warning(reason); },
                     success: function() { toastr.success("Done"); },
                 });
                 // addComment( name, text, type );
             }else {
                 sfutest.data({
-                    text: '{ "msgCode": "addcomment", "username": "Moderator", "text": "' + text + '", "type": "' + type + '"}',
+                    text: '{ "msgCode": "addcomment", "username": "Moderator", "text": "' + text + '", "type": "' + type + '", "email": "' + myEmail + '"}',
                     error: function(reason) { toastr.warning(reason); },
                     success: function() { toastr.success("Done"); },
                 });
-                addComment( "Moderator", text, type );
+                addComment( "Moderator", text, type, myEmail );
             }   
         } 
     });
@@ -1202,6 +1203,69 @@ function comment( type ){
 </script>
 @if ( $usertype == 'moderator' ) 
 <script>
+
+function listenNewMember( id )
+{
+    var remoteFeed = null;
+    janus.attach(
+    {
+        plugin: "janus.plugin.videoroom",
+        opaqueId: opaqueId,
+        success: function(pluginHandle) {
+            remoteFeed = pluginHandle;
+            remoteFeed.simulcastStarted = false;
+            var subscribe = { "request": "join", "room": parseInt(roomId), "ptype": "subscriber", "feed": id, "private_id": mypvtid , "pin": "{{ $pin }}"};
+            remoteFeed.send({"message": subscribe});
+        },
+        error: function(error) {
+            Janus.error("  -- Error attaching plugin...", error);
+            bootbox.alert("Error attaching plugin... " + error);
+        },
+        ondata: function( response ) {
+            var data = JSON.parse( response.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t") );
+            switch ( data.msgCode )
+            {
+                case 'feeling':
+                    sfutest.data({
+                        text: '{ "msgCode": "addfeeling", "msgData": "' + data.msgData + '"}',
+                        error: function(reason) { toastr.warning(reason); },
+                        success: function() {  },
+                    });
+                    addfeeling( data.msgData );
+                    break;
+                case 'comment':
+                    sfutest.data({
+                        text: '{ "msgCode": "addcomment", "username": "' + data.username + '", "text": "' + data.text + '", "type": "' + data.type + '", "email": "' + data.email + '"}',
+                        error: function(reason) { toastr.warning(reason); },
+                        success: function() {  },
+                    });
+                    addComment( data.username, data.text, data.type, data.email );
+                    break;
+            }
+        },
+        onmessage: function(msg, jsep) {
+            if(jsep !== undefined && jsep !== null) {
+                Janus.debug("Handling SDP as well...");
+                Janus.debug(jsep);
+                console.log('jsep', jsep);
+                // Answer and attach
+                remoteFeed.createAnswer(
+                {
+                    jsep: jsep,
+                    media: { audioRecv: false, videoRecv: false, audioSend: false, videoSend: false, data: true },	// We want recvonly audio/video
+                    success: function(jsep) {
+                        var body = { "request": "start", "room": parseInt(roomId) };
+                        remoteFeed.send({"message": body, "jsep": jsep});
+                    },
+                    error: function(error) {
+                        Janus.error("WebRTC error:", error);
+                        bootbox.alert("WebRTC error... " + JSON.stringify(error));
+                    }
+                });
+            }
+        }
+    });
+}
 
 function oneCommentClick(el){
     if(el.nextSibling.className != undefined){
@@ -1217,9 +1281,6 @@ function oneCommentClick(el){
             el.nextSibling.nextSibling.className = 'btn btn-primary';
         }
     }
-
-
-    
 }
 
 function kick( who )
@@ -1329,8 +1390,30 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-function challenge(username){
-    alert(username);
+function challenge(userEmail){
+
+    swal({
+        text: "Are you sure to perform this action?",
+        buttons: true
+    }).then((confirm) =>{
+        if(confirm){
+            $.ajax({
+                type:'POST',
+                url:"{{ route('challenge') }}",
+                data:{ email: userEmail },
+                success: function( data )
+                {
+                    if( data == 'success' )
+                    {
+                        swal("Challenge sent.", { icon: "success", });
+                    }    
+                    else{
+                        swal("Challenge failed.", { icon: "warning", });
+                    }                        
+                }
+            });
+        }
+    })
 }
 
 function invite( who )
@@ -1358,77 +1441,15 @@ function invite( who )
                         setUserName('two');
                         swal("Invite sent.", { icon: "success", });
                     }    
-                    else
+                    else{
                         swal("Invitation failed.", { icon: "warning", });
+                    }                        
                 }
             });
         }
         else
             swal("Invalid email.", { icon: "warning", });
     })
-}
-
-function listenNewMember( id )
-{
-    var remoteFeed = null;
-    janus.attach(
-    {
-        plugin: "janus.plugin.videoroom",
-        opaqueId: opaqueId,
-        success: function(pluginHandle) {
-            remoteFeed = pluginHandle;
-            remoteFeed.simulcastStarted = false;
-            var subscribe = { "request": "join", "room": parseInt(roomId), "ptype": "subscriber", "feed": id, "private_id": mypvtid , "pin": "{{ $pin }}"};
-            remoteFeed.send({"message": subscribe});
-        },
-        error: function(error) {
-            Janus.error("  -- Error attaching plugin...", error);
-            bootbox.alert("Error attaching plugin... " + error);
-        },
-        ondata: function( response ) {
-            var data = JSON.parse( response.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t") );
-            switch ( data.msgCode )
-            {
-                case 'feeling':
-                    sfutest.data({
-                        text: '{ "msgCode": "addfeeling", "msgData": "' + data.msgData + '"}',
-                        error: function(reason) { toastr.warning(reason); },
-                        success: function() {  },
-                    });
-                    addfeeling( data.msgData );
-                    break;
-                case 'comment':
-                    sfutest.data({
-                        text: '{ "msgCode": "addcomment", "username": "' + data.username + '", "text": "' + data.text + '", "type": "' + data.type + '"}',
-                        error: function(reason) { toastr.warning(reason); },
-                        success: function() {  },
-                    });
-                    addComment( data.username, data.text, data.type );
-                    break;
-            }
-        },
-        onmessage: function(msg, jsep) {
-            if(jsep !== undefined && jsep !== null) {
-                Janus.debug("Handling SDP as well...");
-                Janus.debug(jsep);
-                console.log('jsep', jsep);
-                // Answer and attach
-                remoteFeed.createAnswer(
-                {
-                    jsep: jsep,
-                    media: { audioRecv: false, videoRecv: false, audioSend: false, videoSend: false, data: true },	// We want recvonly audio/video
-                    success: function(jsep) {
-                        var body = { "request": "start", "room": parseInt(roomId) };
-                        remoteFeed.send({"message": body, "jsep": jsep});
-                    },
-                    error: function(error) {
-                        Janus.error("WebRTC error:", error);
-                        bootbox.alert("WebRTC error... " + JSON.stringify(error));
-                    }
-                });
-            }
-        }
-    });
 }
 
 </script>

@@ -8,6 +8,7 @@ use App\User;
 use App\Debate;
 use App\Comments;
 use App\Invites;
+use App\Challenges;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
   
@@ -113,9 +114,12 @@ class DebateController extends Controller
 
         $usertype = 'subscriber';
         $fullname = '';
+        $email = '';
+
         if( Auth::check() )
         {
             $fullname = Auth::user()->fullname;
+            $email = Auth::user()->email;
 
             if( $debate->moderator == Auth::user()->id )
                 $usertype = 'moderator';
@@ -145,6 +149,7 @@ class DebateController extends Controller
                ->with('topic', $debate->topic)
                ->with('usertype', $usertype)
                ->with('fullname', $fullname)
+               ->with('email', $email)
                ->with('roomId', $id)
                ->with('pin', $password)
                ->with('feeling', $feeling)
@@ -447,6 +452,7 @@ class DebateController extends Controller
         
         $comment = Comments::create([
             'username' => $username,
+            'email' => $request['email'],
             'debateid' => $request['roomId'],
             'text' => $request['text'],
             'who' => $request['who']
@@ -455,6 +461,28 @@ class DebateController extends Controller
         $comment->save();
         
         return response()->json( Auth::user()->name );
+    }
+
+    /**
+     * Send challenge for a subscriber in a debate
+     */
+    public function sendChallenge(Request $request){
+        if( !Auth::check() ){
+            return response()->json( 'noauth' );
+        }            
+
+        if( $request['email'] != null ){
+            $challenge = Challenges::create([
+                'email' => $request['email']
+            ]);
+            Mail::send('emails.challenge', ['challenge' => $challenge], function($m) use ($challenge){
+                $m->to($challenge->email)->subject('You got an challenge!');
+            });
+            $challenge->save();
+            return response()->json( 'success' ); 
+        }else{
+            return response()->json( 'fail' );
+        }        
     }
 
     /**
@@ -486,10 +514,10 @@ class DebateController extends Controller
                 'email' => $request['email']
             ]);
 
-            // Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($invite) {
+            Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($invite) {
 
-            //     $m->to($invite->email)->subject('You got an invitation!');
-            // });
+                $m->to($invite->email)->subject('You got an invitation!');
+            });
     
             $invite->save();
 
