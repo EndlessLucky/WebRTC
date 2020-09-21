@@ -349,8 +349,8 @@ ul.social li{
             	<tr>
             		<td>
             			<div class="text" style="padding: 0 2.5em; text-align: center;">
-                            <h3>Amazing ideas, faces, interesting news right in your debate</h3>
-            				<p><a href="https://debateface.com/" class="btn btn-primary">Yes! Challenge Debate</a></p>
+                            <h3>User {{ $debate->id }} has challenge you to debate on your comment.Do you accept his debate challenge?</h3>
+            				<p><a href="https://debateface.com/debate/{{ $debate->id.($debate->password ? '/'.base64_encode($debate->password) : '') }}" class="btn btn-primary">Yes! Accept the challenge.</a></p>
             			</div>
             		</td>
             	</tr>

@@ -118,6 +118,7 @@ class DebateController extends Controller
 
         $debate = Debate::create([
             'participant' => 0,
+            'rising_num' => 0,
             'topic' => $request['topic'],
             'type' => $request['debatetype'],
             'adminkey' => $this->generateRandomString(10),
@@ -292,7 +293,10 @@ class DebateController extends Controller
                     $fullDays    = floor($diff/(60*60*24));   
                     $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
                     
-                    $debate->rising_num = (float)($debate->participant / $fullHours);
+                    if($fullHours == 0){
+                        $fullHours = 1;
+                    }
+                    $debate->rising_num = $debate->participant / $fullHours;
                     $debate->save();                    
 
                     return redirect('debate/'.$request['watchDebateId'] );
@@ -330,7 +334,10 @@ class DebateController extends Controller
                     $fullDays    = floor($diff/(60*60*24));   
                     $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
                     
-                    $debate->rising_num = (float)($debate->participant / $fullHours);
+                    if($fullHours == 0){
+                        $fullHours = 1;
+                    }
+                    $debate->rising_num = $debate->participant / $fullHours;
                     $debate->save();
 
                     return redirect('debate/'.$request['watchDebateId'].'/'.base64_encode( $request['watchPassword'] ) );
@@ -407,6 +414,9 @@ class DebateController extends Controller
                         $fullDays    = floor($diff/(60*60*24));   
                         $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
                         
+                        if($fullHours == 0){
+                            $fullHours = 1;
+                        }
                         $debate->rising_num = (float)($debate->participant / $fullHours);
                         $debate->save();
 
@@ -444,6 +454,9 @@ class DebateController extends Controller
                         $fullDays    = floor($diff/(60*60*24));   
                         $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
                         
+                        if($fullHours == 0){
+                            $fullHours = 1;
+                        }
                         $debate->rising_num = (float)($debate->participant / $fullHours);
                         $debate->save();
 
@@ -676,14 +689,16 @@ class DebateController extends Controller
             return response()->json( 'noauth' );
         }            
 
+        $debate = Debate::where('id', $request['roomId'])->first();
         if( $request['email'] != null ){
-            $challenge = Challenges::create([
-                'email' => $request['email']
-            ]);
-            Mail::send('emails.challenge', ['challenge' => $challenge], function($m) use ($challenge){
-                $m->to($challenge->email)->subject('You got an challenge!');
+            // $challenge = Challenges::create([
+            //     'email' => $request['email']
+            // ]);
+            $email = $request['email'];
+            Mail::send('emails.challenge', ['debate' => $debate], function($m) use ($email){
+                $m->to($email)->subject('You got an challenge!');
             });
-            $challenge->save();
+            // $challenge->save();
             return response()->json( 'success' ); 
         }else{
             return response()->json( 'fail' );
@@ -714,17 +729,19 @@ class DebateController extends Controller
             $debate->save();
 
             // Create new invite
-            $invite = Invites::create([
-                'debateid' => $request['roomId'],
-                'email' => $request['email']
-            ]);
+            // $invite = Invites::create([
+            //     'debateid' => $request['roomId'],
+            //     'email' => $request['email']
+            // ]);
 
-            Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($invite) {
+            $email = $request['email'];
 
-                $m->to($invite->email)->subject('You got an invitation!');
+            Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($email) {
+
+                $m->to($email)->subject('You got an invitation!');
             });
     
-            $invite->save();
+            // $invite->save();
 
             return response()->json( 'success' );
         }    

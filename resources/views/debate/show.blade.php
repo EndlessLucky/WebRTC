@@ -1400,7 +1400,7 @@ function challenge(userEmail){
             $.ajax({
                 type:'POST',
                 url:"{{ route('challenge') }}",
-                data:{ email: userEmail },
+                data:{ roomId: roomId, email: userEmail },
                 success: function( data )
                 {
                     if( data == 'success' )

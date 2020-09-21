@@ -351,7 +351,10 @@ ul.social li{
             			<div class="text" style="padding: 0 2.5em; text-align: center;">
             				<h2>{{ $debate->topic }}</h2>
             				<h3>Debate #{{ $debate->id }}</h3>
-                            <h3>Amazing ideas, faces, interesting news right in your debate</h3>
+                            <h3>
+							Amazing ideas, faces, interesting news right in your debate.
+							If you want to become a debator, please login.
+							</h3>
             				<p><a href="https://debateface.com/debate/{{ $debate->id.($debate->password ? '/'.base64_encode($debate->password) : '') }}" class="btn btn-primary">Yes! Join Debate</a></p>
             			</div>
             		</td>
