@@ -9,6 +9,8 @@ use App\Debate;
 use App\Comments;
 use App\Invites;
 use App\Challenges;
+use App\LastWatch;
+use App\LastJoin;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
   
@@ -39,9 +41,35 @@ class DebateController extends Controller
      */
     public function join()
     {
-
-        return view('debate.join');
+        $watchId = '';
+        $watchTopic = '';
+        $joinId = '';
+        $joinTopic = '';
         
+        if(Auth::check()){
+            $email = Auth::user()->email; 
+            $watch = LastWatch::where('email', $email)->first();
+            if($watch){
+                $watchId = $watch->debate_id;
+                $watchTopic = $watch->debate_topic;
+            }            
+            $join = LastJoin::where('email', $email)->first();
+            if($join){
+                $joinId = $join->debate_id;
+                $joinTopic = $join->debate_topic;
+            }
+            return view('debate.join')
+                ->with('watchId', $watchId)
+                ->with('watchTopic', $watchTopic)
+                ->with('joinId', $joinId)
+                ->with('joinTopic', $joinTopic);
+        }else{
+            return view('debate.join')
+                ->with('watchId', $watchId)
+                ->with('watchTopic', $watchTopic)
+                ->with('joinId', $joinId)
+                ->with('joinTopic', $joinTopic);
+        }        
     }
 
     private function generateRandomString($length = 10) {
@@ -191,16 +219,59 @@ class DebateController extends Controller
      */
     public function goForWatch(Request $request)
     {   
+        $email = '';
+
+        if( Auth::check() ){
+            $email = Auth::user()->email;
+        }       
+
         if( $request['watchDebateId'] != NULL )
         {
             $debate = Debate::where('id', $request['watchDebateId'])->first();
 
             if( $debate != NULL )
             {
-                if( $request['watchPassword'] == NULL )
+                if( $request['watchPassword'] == NULL ){
+                    if($email != ''){
+                        $lastWatch = LastWatch::where('email', $email)->first();
+                        if(!$lastWatch){
+                            $watch = LastWatch::create([
+                                'email' => $email,
+                                'debate_id' => $request['watchDebateId'],
+                                'debate_topic' => $debate->topic
+                            ]);
+                    
+                            $watch->save();
+                        }else{
+                            $watch = LastWatch::find($lastWatch->id);
+                            $watch->email = $email;
+                            $watch->debate_id = $request['watchDebateId'];
+                            $watch->debate_topic = $debate->topic;
+                            $watch->save();
+                        }
+                    }                   
                     return redirect('debate/'.$request['watchDebateId'] );
-                else
+                }else{
+                    if($email != ''){
+                        $lastWatch = LastWatch::where('email', $email)->first();
+                        if(!$lastWatch){
+                            $watch = LastWatch::create([
+                                'email' => $email,
+                                'debate_id' => $request['watchDebateId'],
+                                'debate_topic' => $debate->topic
+                            ]);
+                    
+                            $watch->save();
+                        }else{
+                            $watch = LastWatch::find($lastWatch->id);
+                            $watch->email = $email;
+                            $watch->debate_id = $request['watchDebateId'];
+                            $watch->debate_topic = $debate->topic;
+                            $watch->save();
+                        }
+                    }                    
                     return redirect('debate/'.$request['watchDebateId'].'/'.base64_encode( $request['watchPassword'] ) );
+                }                    
             }
             else
             {
@@ -240,10 +311,45 @@ class DebateController extends Controller
                             return view('debate.error')->with('error', 'Full of debators...');
                     }
                     
-                    if( $request['joinPassword'] == NULL )
+                    if( $request['joinPassword'] == NULL ){
+                        $email = Auth::user()->email;
+                        $lastJoin = LastJoin::where('email', $email)->first();
+                        if(!$lastJoin){
+                            $join = LastJoin::create([
+                                'email' => $email,
+                                'debate_id' => $request['joinDebateId'],
+                                'debate_topic' => $debate->topic
+                            ]);
+                    
+                            $join->save();
+                        }else{
+                            $join = LastJoin::find($lastJoin->id);
+                            $join->email = $email;
+                            $join->debate_id = $request['joinDebateId'];
+                            $join->debate_topic = $debate->topic;
+                            $join->save();
+                        }
                         return redirect('debate/'.$request['joinDebateId'] );
-                    else
+                    }else{
+                        $email = Auth::user()->email;
+                        $lastJoin = LastJoin::where('email', $email)->first();
+                        if(!$lastJoin){
+                            $join = LastJoin::create([
+                                'email' => $email,
+                                'debate_id' => $request['joinDebateId'],
+                                'debate_topic' => $debate->topic
+                            ]);
+                    
+                            $join->save();
+                        }else{
+                            $join = LastJoin::find($lastJoin->id);
+                            $join->email = $email;
+                            $join->debate_id = $request['joinDebateId'];
+                            $join->debate_topic = $debate->topic;
+                            $join->save();
+                        }
                         return redirect('debate/'.$request['joinDebateId'].'/'.base64_encode( $request['joinPassword'] ) );
+                    }                        
                 }
                 else
                     return view('debate.error')->with('error', 'No such debate...');

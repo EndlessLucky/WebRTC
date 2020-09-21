@@ -38,8 +38,8 @@
                         <div class = "form-group row">
                             <div class = "col-md-10 offset-md-1">
                                 <div> <strong>{{ __('Last Debate you watched:') }}</strong> </div>
-                                <div> Debate: 9538 </div>
-                                <div class = "mb-30"> Topic: Chocolate or Vanilla </div>
+                                <div> Debate: {{ $watchId }} </div>
+                                <div class = "mb-30"> Topic: {{ $watchTopic }} </div>
 
                                 <div> <strong>{{ __('Trending Debate Topics:') }}</strong> </div>
                                 <div> 1. Is Tom brady the best QB? </div>
@@ -93,8 +93,8 @@
                         <div class = "form-group row">
                             <div class = "col-md-10 offset-md-1">
                                 <div> <strong>{{ __('Last Debate you joined:') }}</strong> </div>
-                                <div> Debate: 5136 </div>
-                                <div class = "mb-30"> Who's better? Mets or Rays </div>
+                                <div> Debate: {{ $joinId }} </div>
+                                <div class = "mb-30"> Topic: {{ $joinTopic }} </div>
 
                                 <div> <strong>{{ __('Most Popular Debate:') }}</strong> </div>
                                 <div> Debate: 6234 </div>
