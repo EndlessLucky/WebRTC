@@ -99,8 +99,8 @@
                                 <div class = "mb-30"> Topic: {{ $topTopic }} </div>
 
                                 <div> <strong>{{ __('Fastest Growing Debate:') }}</strong> </div>
-                                <div> Debate: 1791 </div>
-                                <div > MJ was the king, not Elvis </div>
+                                <div> Debate: {{ $growId }}  </div>
+                                <div > Topic: {{ $growTopic }} </div>
                             </div>
                         </div>
 

@@ -56,6 +56,11 @@ class DebateController extends Controller
         // Get the trending debates
         $trendingDebate = Debate::orderBy('participant', 'DESC')->take(5)->get();
        
+        // Get the fatest growing debate
+        $topGrow = Debate::max('rising_num');
+        $growDebate = Debate::where('rising_num', $topGrow)->first();
+        $growId = $growDebate->id;
+        $growTopic = $growDebate->topic;
 
         if(Auth::check()){
             $email = Auth::user()->email; 
@@ -76,7 +81,9 @@ class DebateController extends Controller
                 ->with('joinTopic', $joinTopic)
                 ->with('topId', $topId)
                 ->with('topTopic', $topTopic)
-                ->with('trendingDebate', $trendingDebate);
+                ->with('trendingDebate', $trendingDebate)
+                ->with('growId', $growId)
+                ->with('growTopic', $growTopic);
         }else{
             return view('debate.join')
                 ->with('watchId', $watchId)
@@ -85,7 +92,9 @@ class DebateController extends Controller
                 ->with('joinTopic', $joinTopic)
                 ->with('topId', $topId)
                 ->with('topTopic', $topTopic)
-                ->with('trendingDebate', $trendingDebate);
+                ->with('trendingDebate', $trendingDebate)
+                ->with('growId', $growId)
+                ->with('growTopic', $growTopic);
         }        
     }
 
@@ -250,6 +259,7 @@ class DebateController extends Controller
             if( $debate != NULL )
             {
                 if( $request['watchPassword'] == NULL ){
+                    //Get the last debate you watched
                     if($email != ''){
                         $lastWatch = LastWatch::where('email', $email)->first();
                         if(!$lastWatch){
@@ -268,12 +278,26 @@ class DebateController extends Controller
                             $watch->save();
                         }
                     }  
+
+                    //Set the ranking
                     $participant = $debate->participant;
                     $participant++;
                     $debate->participant = $participant;
-                    $debate->save();                 
+                    $debate->save(); 
+                    
+                    //Set the growing number of the debate
+                    $createdTime = $debate->created_at;
+                    $now = date('Y-m-d H:i:s', time());
+                    $diff = strtotime($now) - strtotime($createdTime);
+                    $fullDays    = floor($diff/(60*60*24));   
+                    $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
+                    
+                    $debate->rising_num = (float)($debate->participant / $fullHours);
+                    $debate->save();                    
+
                     return redirect('debate/'.$request['watchDebateId'] );
                 }else{
+                    //Get the last debate you watched
                     if($email != ''){
                         $lastWatch = LastWatch::where('email', $email)->first();
                         if(!$lastWatch){
@@ -292,10 +316,23 @@ class DebateController extends Controller
                             $watch->save();
                         }
                     }       
+
+                    //Set the ranking
                     $participant = $debate->participant;
                     $participant++;
                     $debate->participant = $participant;
-                    $debate->save();              
+                    $debate->save();   
+                    
+                    //Set the growing number of the debate
+                    $createdTime = $debate->created_at;
+                    $now = date('Y-m-d H:i:s', time());
+                    $diff = strtotime($now) - strtotime($createdTime);
+                    $fullDays    = floor($diff/(60*60*24));   
+                    $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
+                    
+                    $debate->rising_num = (float)($debate->participant / $fullHours);
+                    $debate->save();
+
                     return redirect('debate/'.$request['watchDebateId'].'/'.base64_encode( $request['watchPassword'] ) );
                 }                    
             }
@@ -338,6 +375,7 @@ class DebateController extends Controller
                     }
                     
                     if( $request['joinPassword'] == NULL ){
+                        //Get the last debate you joined
                         $email = Auth::user()->email;
                         $lastJoin = LastJoin::where('email', $email)->first();
                         if(!$lastJoin){
@@ -355,8 +393,26 @@ class DebateController extends Controller
                             $join->debate_topic = $debate->topic;
                             $join->save();
                         }
+
+                        //Set the ranking
+                        $participant = $debate->participant;
+                        $participant++;
+                        $debate->participant = $participant;
+                        $debate->save();   
+                        
+                        //Set the growing number of the debate
+                        $createdTime = $debate->created_at;
+                        $now = date('Y-m-d H:i:s', time());
+                        $diff = strtotime($now) - strtotime($createdTime);
+                        $fullDays    = floor($diff/(60*60*24));   
+                        $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
+                        
+                        $debate->rising_num = (float)($debate->participant / $fullHours);
+                        $debate->save();
+
                         return redirect('debate/'.$request['joinDebateId'] );
                     }else{
+                        //Get the last debate you joined
                         $email = Auth::user()->email;
                         $lastJoin = LastJoin::where('email', $email)->first();
                         if(!$lastJoin){
@@ -374,6 +430,23 @@ class DebateController extends Controller
                             $join->debate_topic = $debate->topic;
                             $join->save();
                         }
+
+                        //Set the ranking
+                        $participant = $debate->participant;
+                        $participant++;
+                        $debate->participant = $participant;
+                        $debate->save();   
+                        
+                        //Set the growing number of the debate
+                        $createdTime = $debate->created_at;
+                        $now = date('Y-m-d H:i:s', time());
+                        $diff = strtotime($now) - strtotime($createdTime);
+                        $fullDays    = floor($diff/(60*60*24));   
+                        $fullHours   = floor(($diff-($fullDays*60*60*24))/(60*60));
+                        
+                        $debate->rising_num = (float)($debate->participant / $fullHours);
+                        $debate->save();
+
                         return redirect('debate/'.$request['joinDebateId'].'/'.base64_encode( $request['joinPassword'] ) );
                     }                        
                 }
