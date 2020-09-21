@@ -692,8 +692,13 @@ $(document).ready(function() {
                                     // One of the publishers has gone away?
                                     var leaving = msg["leaving"];
                                     Janus.log("Publisher left: " + leaving);
-                                    if( leaving == "ok" && msg["reason"] == "kicked")
-                                        swal("You were kicked.", { icon: "warning", });
+                                    if( leaving == "ok" && msg["reason"] == "kicked"){
+                                        toastr.warning("You were kicked");
+                                        setTimeout(function(){ 
+                                            window.location = '/';
+                                        }, 5000);
+                                    }
+                                        
                                     
                                     var remoteFeed = null;
                                     for( var i = 0; i < feeds.length; i ++ ) {
