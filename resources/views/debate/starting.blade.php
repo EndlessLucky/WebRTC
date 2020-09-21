@@ -135,7 +135,7 @@ $(document).ready(function() {
                     success: function(pluginHandle) {
                         sfutest = pluginHandle;
                         
-                        var create = { "request": "create", "room": parseInt(roomId), "description": "{{ $topic }}", "secret" : "{{ $adminkey }}", "pin" : "{{ $password }}"};
+                        var create = { "request": "create", "room": parseInt(roomId), "description": "{{ $topic }}", "secret" : "{{ $adminkey }}", "pin" : "{{ $password }}", "publishers": 50, "videocodec": "h264", "audiocodec": "opus"};
                         
                         sfutest.send(
                         {

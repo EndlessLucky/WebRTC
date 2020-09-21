@@ -150,8 +150,7 @@
                     <div class="col-md-2 mb-3">
                         <div class="panel panel-default moderatorPane">
                             <div class="panel-body relative videoContainer" id="moderator_container">
-                                <video class="rounded centered" id="moderator" width="100%" height="100%" autoplay playsinline muted="muted"></video>
-                                <audio class="rounded centered" id="moderator_audio" width="100%" height="100%" autoplay playsinline muted="muted"></audio>
+                                <video class="rounded centered" id="moderator" width="100%" height="100%" autoplay playsinline></video>
                             </div>
                             <div class = "mt-1 moderatorText"> <div>Moderator</div> <div>Debate #{{ $roomId }}</div></div>
                         </div>
@@ -196,7 +195,7 @@
                     <div class="col-md-5 offset-md-1">
                         <div class="panel panel-default debatorPane">
                             <div class="panel-body relative videoContainer" id="debator_one_container">
-                                <video class="rounded centered" id="debator_one" width="100%" height="100%" autoplay playsinline muted="muted"/>
+                                <video class="rounded centered" id="debator_one" width="100%" height="100%" autoplay playsinline />
                             </div>
                             <div class = "mb-1 userDisplay">
                                 <div class = "userNameDisplay borderRight">
@@ -241,7 +240,7 @@
                     <div class="col-md-5" >
                         <div class="panel panel-default debatorPane">
                             <div class="panel-body relative videoContainer" id="debator_two_container">
-                                <video class="rounded centered" id="debator_two" width="100%" height="100%" autoplay playsinline muted="muted"/>
+                                <video class="rounded centered" id="debator_two" width="100%" height="100%" autoplay playsinline />
                             </div>
                             <div class = "mb-1 userDisplay">
                                 <div class = "userNameDisplay borderRight">
@@ -289,7 +288,7 @@
                     <div class="col-md-5 offset-md-1">
                         <div class="panel panel-default debatorPane">
                             <div class="panel-body relative videoContainer" id="debator_one_container">
-                                <video class="rounded centered" id="debator_one" width="100%" height="100%" autoplay playsinline muted="muted"/>
+                                <video class="rounded centered" id="debator_one" width="100%" height="100%" autoplay playsinline />
                             </div>
                             <div class = "mb-1 userDisplay">
                                 <div class = "userNameDisplay borderRight">
@@ -334,7 +333,7 @@
                     <div class="col-md-5" >
                         <div class="panel panel-default debatorPane">
                             <div class="panel-body relative videoContainer" id="debator_two_container">
-                                <video class="rounded centered" id="debator_two" width="100%" height="100%" autoplay playsinline muted="muted"/>
+                                <video class="rounded centered" id="debator_two" width="100%" height="100%" autoplay playsinline />
                             </div>
                             <div class = "mb-1 userDisplay">
                                 <div class = "userNameDisplay borderRight">
@@ -381,8 +380,7 @@
                     <div class="col-md-2 offset-md-5">
                         <div class="panel panel-default moderatorPane">
                             <div class="panel-body relative videoContainer" id="moderator_container">
-                                <video class="rounded centered" id="moderator" width="100%" height="100%" autoplay playsinline muted="muted"></video>
-                                <audio class="rounded centered" id="moderator_audio" width="100%" height="100%" autoplay playsinline muted="muted"></audio>
+                                <video class="rounded centered" id="moderator" width="100%" height="100%" autoplay playsinline ></video>
                             </div>
                             <div class = "mt-1 moderatorText"> <div>Moderator</div> <div>Debate #{{ $roomId }}</div></div>
                         </div>
@@ -610,15 +608,15 @@ $(document).ready(function() {
                                 mypvtid = msg["private_id"];
                                 Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
 
-                                $.ajax({
-                                    type:'POST',
-                                    url:"{{ route('checkinvite') }}",
-                                    data:{ roomId: roomId },
-                                    success: function(data){
-                                        if( data == 'success' )
-                                            console.log('checked invite');
-                                    }
-                                });
+                                // $.ajax({
+                                //     type:'POST',
+                                //     url:"{{ route('checkinvite') }}",
+                                //     data:{ roomId: roomId },
+                                //     success: function(data){
+                                //         if( data == 'success' )
+                                //             console.log('checked invite');
+                                //     }
+                                // });
 
                                 if ( usertype == "publisher" )
                                     publishOwnFeed(true);
@@ -908,7 +906,6 @@ function newRemoteFeed(id, display, audio, video) {
                 toastr.warning("Publisher is using " + video + ", but Safari doesn't support it: disabling video");
                 subscribe["offer_video"] = false;
             }
-            remoteFeed.audioCodec = audio;
             remoteFeed.videoCodec = video;
             remoteFeed.send({"message": subscribe});
         },
@@ -1005,15 +1002,8 @@ function newRemoteFeed(id, display, audio, video) {
         },
         onremotestream: function(stream) {
             Janus.debug("Remote feed #" + remoteFeed.rfindex);
-            console.log('start', remoteFeed, stream);
+            console.log('start', remoteFeed);
             Janus.attachMediaStream($('#'+remoteFeed.rfdisplay).get(0), stream);
-            //Janus.attachMediaStream($('#'+remoteFeed.rfdisplay + "_audio").get(0), stream);
-            console.log('These are attached stream data', stream.getAudioTracks(), stream.getVideoTracks() );
-            const audiostream = new MediaStream();
-            let audios = stream.getAudioTracks();
-            audiostream.addTrack(audios[0]);
-            $('#'+remoteFeed.rfdisplay + "_audio")[0].srcObject = audiostream;
-            console.log( $('#'+remoteFeed.rfdisplay + "_audio")[0], audiostream );
         }
     });
 }
