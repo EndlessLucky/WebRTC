@@ -45,7 +45,18 @@ class DebateController extends Controller
         $watchTopic = '';
         $joinId = '';
         $joinTopic = '';
+        $topId = '';
+
+        // Get the most popular debate id
+        $topParticipant = Debate::max('participant');
+        $topDebate = Debate::where('participant', $topParticipant)->first();
+        $topId = $topDebate->id;
+        $topTopic = $topDebate->topic;
         
+        // Get the trending debates
+        $trendingDebate = Debate::orderBy('participant', 'DESC')->take(5)->get();
+       
+
         if(Auth::check()){
             $email = Auth::user()->email; 
             $watch = LastWatch::where('email', $email)->first();
@@ -62,13 +73,19 @@ class DebateController extends Controller
                 ->with('watchId', $watchId)
                 ->with('watchTopic', $watchTopic)
                 ->with('joinId', $joinId)
-                ->with('joinTopic', $joinTopic);
+                ->with('joinTopic', $joinTopic)
+                ->with('topId', $topId)
+                ->with('topTopic', $topTopic)
+                ->with('trendingDebate', $trendingDebate);
         }else{
             return view('debate.join')
                 ->with('watchId', $watchId)
                 ->with('watchTopic', $watchTopic)
                 ->with('joinId', $joinId)
-                ->with('joinTopic', $joinTopic);
+                ->with('joinTopic', $joinTopic)
+                ->with('topId', $topId)
+                ->with('topTopic', $topTopic)
+                ->with('trendingDebate', $trendingDebate);
         }        
     }
 
@@ -91,6 +108,7 @@ class DebateController extends Controller
             return redirect('login?alertType=1');
 
         $debate = Debate::create([
+            'participant' => 0,
             'topic' => $request['topic'],
             'type' => $request['debatetype'],
             'adminkey' => $this->generateRandomString(10),
@@ -249,7 +267,11 @@ class DebateController extends Controller
                             $watch->debate_topic = $debate->topic;
                             $watch->save();
                         }
-                    }                   
+                    }  
+                    $participant = $debate->participant;
+                    $participant++;
+                    $debate->participant = $participant;
+                    $debate->save();                 
                     return redirect('debate/'.$request['watchDebateId'] );
                 }else{
                     if($email != ''){
@@ -269,7 +291,11 @@ class DebateController extends Controller
                             $watch->debate_topic = $debate->topic;
                             $watch->save();
                         }
-                    }                    
+                    }       
+                    $participant = $debate->participant;
+                    $participant++;
+                    $debate->participant = $participant;
+                    $debate->save();              
                     return redirect('debate/'.$request['watchDebateId'].'/'.base64_encode( $request['watchPassword'] ) );
                 }                    
             }

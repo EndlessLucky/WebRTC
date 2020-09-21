@@ -42,11 +42,9 @@
                                 <div class = "mb-30"> Topic: {{ $watchTopic }} </div>
 
                                 <div> <strong>{{ __('Trending Debate Topics:') }}</strong> </div>
-                                <div> 1. Is Tom brady the best QB? </div>
-                                <div> 2. Will Trump Win 2020 Election? </div>
-                                <div> 3. Will the healthcare bill pass? </div>
-                                <div> 4. Who's more powerful JLo or Arod? </div>
-                                <div> 5. What's better for you? Tea vs Coffee </div>
+                                @foreach ($trendingDebate as $debate)
+                                <div> - {{ $debate->topic }} </div>
+                                @endforeach
                             </div>
                         </div>
 
@@ -97,8 +95,8 @@
                                 <div class = "mb-30"> Topic: {{ $joinTopic }} </div>
 
                                 <div> <strong>{{ __('Most Popular Debate:') }}</strong> </div>
-                                <div> Debate: 6234 </div>
-                                <div class = "mb-30"> Should the US invade Iran </div>
+                                <div> Debate: {{ $topId }} </div>
+                                <div class = "mb-30"> Topic: {{ $topTopic }} </div>
 
                                 <div> <strong>{{ __('Fastest Growing Debate:') }}</strong> </div>
                                 <div> Debate: 1791 </div>

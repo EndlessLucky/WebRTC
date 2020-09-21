@@ -12,7 +12,7 @@ class Debate extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'topic', 'type', 'adminkey', 'password', 'rule', 'moderator', 'debator_one', 'one_upvote', 'one_downvote', 'one_heart', 'one_sharp', 'one_timelimit',
+        'id', 'participant', 'topic', 'type', 'adminkey', 'password', 'rule', 'moderator', 'debator_one', 'one_upvote', 'one_downvote', 'one_heart', 'one_sharp', 'one_timelimit',
         'debator_two', 'two_upvote', 'two_downvote', 'two_heart', 'two_sharp', 'two_timelimit'
     ];
 
