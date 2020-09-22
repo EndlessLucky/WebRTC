@@ -355,7 +355,7 @@ ul.social li{
 							Amazing ideas, faces, interesting news right in your debate.
 							If you want to become a debator, please login.
 							</h3>
-            				<p><a href="https://debateface.com/" class="btn btn-primary">Yes! Join Debate</a></p>
+            				<p><a href="https://debateface.com/debate/{{ $debate->id.($debate->password ? '/'.base64_encode($debate->password) : '') }}" class="btn btn-primary">Yes! Join Debate</a></p>
             			</div>
             		</td>
             	</tr>

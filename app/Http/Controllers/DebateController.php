@@ -130,18 +130,20 @@ class DebateController extends Controller
         ]);
 
         $debate->save();
+        $debator_one = $request['debator_one'];
+        $debator_two = $request['debator_two'];
+        
+        if( $request['debator_one'] ){
+            Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($debator_one) {
+                $m->to($debator_one)->subject('You got an invitation!');
+            });
+        }        
 
-        //if( $request['debator_one'] )
-        // Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($invite) {
-
-            //     $m->to($request['debator_one'])->subject('You got an invitation!');
-            // });
-
-        //if( $request['debator_two'] )
-        // Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($invite) {
-
-            //     $m->to($request['debator_two'])->subject('You got an invitation!');
-            // });
+        if( $request['debator_two'] ){
+            Mail::send('emails.invitation', ['debate' => $debate], function ($m) use ($debator_two) {
+                $m->to($debator_two)->subject('You got an invitation!');
+            });
+        }        
 
         return view('debate.starting')
                 ->with('roomId', $debate->id)

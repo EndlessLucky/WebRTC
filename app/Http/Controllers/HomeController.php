@@ -26,16 +26,16 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //return view('home');
+        return view('welcome');
 
-        $invite = Invites::where('email', Auth::user()->email )->first();
-        if( $invite != NULL )
-        {
-            $debate = Debate::where('id', $invite->debateid)->first();
-            if( $debate != NULL )
-                return view('debate.invitejoin')->with('roomId', $invite->debateid)->with('password', $debate->password);
-        }
+        // $invite = Invites::where('email', Auth::user()->email )->first();
+        // if( $invite != NULL )
+        // {
+        //     $debate = Debate::where('id', $invite->debateid)->first();
+        //     if( $debate != NULL )
+        //         return view('debate.invitejoin')->with('roomId', $invite->debateid)->with('password', $debate->password);
+        // }
         
-        return redirect()->route('start');
+        // return redirect()->route('start');
     }
 }

@@ -31,14 +31,14 @@
                             <div class="col-md-6 ">
                                 <div class="form-check">
                                     <div>
-                                        <input class="form-check-input" type="radio" name="debatetype" id="publictype" value = "0" checked>
+                                        <input class="form-check-input" onclick="selectType('public')" type="radio" name="debatetype" id="publictype" value = "0" checked>
 
                                         <label class="form-check-label" for="publictype">
                                             {{ __('Public') }}
                                         </label>
                                     </div>
                                     <div>
-                                        <input class="form-check-input" type="radio" name="debatetype" id="privatetype" value = "1" >
+                                        <input class="form-check-input" onclick="selectType('private')" type="radio" name="debatetype" id="privatetype" value = "1" >
 
                                         <label class="form-check-label" for="privatetype">
                                             {{ __('Private') }}
@@ -48,7 +48,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row blockShow" id="pwdForm">
                             <label for="password" class="col-md-5 col-form-label text-md-right">{{ __('Password of Debate') }}</label>
 
                             <div class="col-md-6">
@@ -118,38 +118,12 @@
     </div>
 </div>
 <script>
-// $(function() {
-    // $('#submitBtn').click(function() {
-    //     var debateData = {
-    //         topic: $("input[name=debatetype]").val(),
-    //         debatetype: $("input[name=debatetype]")[0].checked ? "0" : "1",
-    //         password: $("input[name=password]").val()
-    //     };
-    //     if( $("input[name=rule]").val() != '' )
-    //         $debateData['rule'] = $("input[name=rule]").val();
-    //     if( $("input[name=debator_one]").val() != '' )
-    //         $debateData['debator_one'] = $("input[name=debator_one]").val();
-    //     if( $("input[name=debator_two]").val() != '' )
-    //         $debateData['debator_two'] = $("input[name=debator_two]").val();
-
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: "{{ route('gostart') }}",
-    //         data: debateData,
-    //         error: function()
-    //         {
-    //             alert("Request Failed");
-    //         },
-    //         success: function(response)
-    //         {  
-    //             if( response == 'noauth' )
-    //             {
-                    
-    //             }
-    //         }
-    //     });
-    //     return false;
-    // }); 
-// });
+function selectType(type){
+    if(type == 'public'){
+        $('#pwdForm').addClass('blockShow');
+    }else{
+        $('#pwdForm').removeClass('blockShow');
+    }
+}
 </script>
 @endsection
