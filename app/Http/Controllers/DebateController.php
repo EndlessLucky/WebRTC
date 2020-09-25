@@ -31,9 +31,7 @@ class DebateController extends Controller
      */
     public function start()
     {
-
-        return view('debate.start');
-        
+        return view('debate.start');        
     }
 
     /**

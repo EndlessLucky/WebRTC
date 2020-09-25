@@ -118,8 +118,18 @@
     </div>
 </div>
 <script>
+$(document).ready(function() {
+    if( $('#publicType').attr('checked') == 'checked' ){
+        console.log('public');
+        $('#pwdForm').addClass('blockShow');
+    }else if( $('#privateType').attr('checked') == 'checked' ){
+        console.log('private');
+        $('#pwdForm').removeClass('blockShow');
+    }
+});
+
 function selectType(type){
-    if(type == 'public'){
+    if( type == 'public' ){
         $('#pwdForm').addClass('blockShow');
     }else{
         $('#pwdForm').removeClass('blockShow');
