@@ -21,7 +21,7 @@ class SocialController extends Controller
             Auth::login($users);
             return redirect('/');
         }else {
-            $uesr = User::create([
+            $user = User::create([
                 'name' => $userSocial->getName(),
                 'fullname' => $userSocial->getName(),
                 'email' => $userSocial->getEmail(),
