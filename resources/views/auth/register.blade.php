@@ -83,7 +83,19 @@
                             </div>
                         </div>
                     </form>
+                    <div class="text-xs-center" style="margin-top:20px; justify-content: center;">
+                        <a href="{{ url('/login/facebook') }}" class="btn btn-social btn-social-icon btn-social-facebook">
+                            <span class="icon-facebook"></span>
+                        </a>
+                        <a href="{{ url('/login/twitter') }}" class="btn btn-social btn-social-icon btn-social-twitter">
+                            <span class="icon-twitter"></span>
+                        </a>
+                        <a href="{{ url('/login/google') }}" class="btn btn-social btn-social-icon btn-social-google">
+                            <span class="icon-google"></span>
+                        </a>                        
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>
